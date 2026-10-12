@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horario Escolar - ETC. Felipe Guevara Rojas (5C Aduana)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --text-color: #1e293b;
+            --card-bg: #ffffff;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --accent: #10b981;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --header-bg: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            --header-text: #ffffff;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #0f172a;
+            --text-color: #f1f5f9;
+            --card-bg: #1e293b;
+            --primary: #60a5fa;
+            --primary-hover: #3b82f6;
+            --accent: #34d399;
+            --border-color: #334155;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+            --header-bg: linear-gradient(135deg, #0f172a, #1e3a8a);
+            --header-text: #f1f5f9;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Header Institucional Compartido */
+        .school-header {
+            background: var(--header-bg);
+            color: var(--header-text);
+            padding: 1.5rem 2rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .school-header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.3rem;
+            font-weight: 700;
+        }
+
+        .school-header .info-meta {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        /* Contenedor de Vistas */
+        .view-container {
+            display: none;
+            flex: 1;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .view-container.active {
+            display: block;
+        }
+
+        /* Botón Flotante Circular Derecho */
+        .floating-switcher {
+            position: fixed;
+            right: 25px;
+            bottom: 25px;
+            width: 65px;
+            height: 65px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            transition: transform 0.2s, background 0.2s;
+            border: none;
+            outline: none;
+        }
+
+        .floating-switcher:hover {
+            transform: scale(1.1);
+            background: var(--primary-hover);
+        }
+
+        .floating-switcher svg {
+            width: 30px;
+            height: 30px;
+            fill: currentColor;
+        }
+
+        /* Menú Modal Desplegable del Switcher */
+        .switcher-modal {
+            position: fixed;
+            right: 100px;
+            bottom: 25px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 300px;
+            padding: 1rem;
+            display: none;
+            z-index: 1001;
+        }
+
+        .switcher-modal.open {
+            display: block;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .switcher-modal h3 {
+            font-size: 1rem;
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+
+        .switcher-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .switcher-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 0.6rem 1rem;
+            text-align: left;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .switcher-btn:hover, .switcher-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ================= VISTA 1: KANBAN ================= */
+        .kanban-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .kanban-column {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .kanban-column h3 {
+            text-align: center;
+            font-size: 1.1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary);
+            color: var(--text-color);
+        }
+
+        .kanban-card {
+            background: var(--bg-color);
+            border-left: 5px solid var(--primary);
+            padding: 0.8rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .kanban-card.receso {
+            border-left-color: #94a3b8;
+            background: rgba(148, 163, 184, 0.1);
+            text-align: center;
+            font-style: italic;
+            font-size: 0.85rem;
+        }
+
+        .card-time {
+            font-size: 0.75rem;
+            font-weight: 600;
+            opacity: 0.7;
+        }
+
+        .card-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .card-prof {
+            font-size: 0.8rem;
+            opacity: 0.85;
+        }
+
+        /* ================= VISTA 2: TIMELINE ================= */
+        .timeline-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .timeline-day-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .timeline-day-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            border-left: 4px solid var(--primary);
+            padding-left: 0.5rem;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+            border-left: 2px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .timeline-item {
+            position: relative;
+            background: var(--card-bg);
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -37px;
+            top: 15px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: 2px solid var(--bg-color);
+        }
+
+        /* ================= VISTA 3: NEUMORFISMO CLARO/OSCURO ================= */
+        .neumorph-controls {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 1.5rem;
+        }
+
+        .theme-switch-btn {
+            background: var(--card-bg);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 30px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            color: var(--text-color);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .neumorph-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .neumorph-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .neumorph-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .neumorph-day-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            color: var(--primary);
+        }
+
+        .neumorph-class-item {
+            padding: 0.6rem 0;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.9rem;
+        }
+
+        .neumorph-class-item:last-child {
+            border-bottom: none;
+        }
+
+        /* ================= VISTA 4: APP-LIKE ================= */
+        .app-frame {
+            max-width: 420px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: 35px;
+            border: 8px solid var(--text-color);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 650px;
+        }
+
+        .app-header {
+            background: var(--primary);
+            color: white;
+            padding: 1.2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .app-date-indicator {
+            font-size: 0.8rem;
+            opacity: 0.9;
+            margin-bottom: 0.2rem;
+        }
+
+        .app-live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(0,0,0,0.2);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            margin-top: 5px;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #34d399;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 8px #34d399; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+
+        .app-content {
+            flex: 1;
+            padding: 1.2rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .app-class-card {
+            background: var(--bg-color);
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .app-tabs {
+            display: flex;
+            background: var(--bg-color);
+            border-top: 1px solid var(--border-color);
+            padding: 0.5rem;
+            justify-content: space-around;
+        }
+
+        .app-tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.5rem;
+            cursor: pointer;
+            border-radius: 8px;
+            opacity: 0.7;
+        }
+
+        .app-tab-btn.active {
+            opacity: 1;
+            background: var(--primary);
+            color: white;
+        }
+
+        /* ================= VISTA 5: INTERACTIVA HOVER/CLICK ================= */
+        .interactive-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .interactive-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .interactive-card:hover {
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            border-color: var(--primary);
+        }
+
+        .interactive-card .extra-details {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, opacity 0.3s ease;
+            margin-top: 0;
+            font-size: 0.85rem;
+            border-top: 1px dashed var(--border-color);
+            padding-top: 0;
+        }
+
+        .interactive-card.expanded .extra-details {
+            max-height: 150px;
+            opacity: 1;
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+        }
+
+        .expand-hint {
+            font-size: 0.7rem;
+            color: var(--primary);
+            margin-top: 0.5rem;
+            font-weight: 600;
+            display: block;
+        }
+
+        /* ================= VISTA 6: RETRO ARCADE 8-BITS ================= */
+        .arcade-wrapper {
+            font-family: 'Press Start 2P', monospace !important;
+            background: #0f051d;
+            color: #00ffcc;
+            padding: 2rem;
+            border-radius: 12px;
+            border: 4px solid #ff00ff;
+            box-shadow: 0 0 20px #ff00ff;
+        }
+
+        .arcade-wrapper * {
+            font-family: 'Press Start 2P', monospace !important;
+        }
+
+        .arcade-title {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #ffff00;
+            margin-bottom: 2rem;
+            text-shadow: 2px 2px #ff00ff;
+        }
+
+        .arcade-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .arcade-box {
+            background: #1a0033;
+            border: 3px solid #00ffcc;
+            padding: 1rem;
+            box-shadow: 4px 4px 0px #ff00ff;
+        }
+
+        .arcade-box h4 {
+            color: #ff9900;
+            font-size: 0.8rem;
+            margin-bottom: 0.8rem;
+            border-bottom: 2px dashed #00ffcc;
+            padding-bottom: 0.4rem;
+        }
+
+        .arcade-item {
+            font-size: 0.6rem;
+            margin-bottom: 0.8rem;
+            line-height: 1.4;
+            color: #ffffff;
+        }
+
+        .arcade-item span {
+            color: #00ffcc;
+        }
+    </style>
+</head>
+<body data-theme="dark">
+
+    <!-- Header Común -->
+    <header class="school-header">
+        <h1>ETC. FELIPE GUEVARA ROJAS</h1>
+        <div class="info-meta">
+            <span>Año Escolar: 2026-2027</span>
+            <span>Sección: 5C ADUANA</span>
+            <span>Prof. Guía: Xotchilmar Meneses</span>
+            <span>Coordinador: Carmen Gómez</span>
+        </div>
+    </header>
+
+    <!-- ================= VISTA 1: KANBAN ================= -->
+    <div id="view-kanban" class="view-container active">
+        <h2 style="margin-bottom: 1.5rem; text-align: center; color: var(--primary);">Estilo "Tablero Kanban" Semanal</h2>
+        <div class="kanban-grid" id="kanban-content"></div>
+    </div>
+
+    <!-- ================= VISTA 2: TIMELINE ================= -->
+    <div id="view-timeline" class="view-container">
+        <h2 style="margin-bottom: 1.5rem; text-align: center; color: var(--primary);">Modo Línea de Tiempo (Timeline)</h2>
+        <div class="timeline-container" id="timeline-content"></div>
+    </div>
+
+    <!-- ================= VISTA 3: NEUMORFISMO ================= -->
+    <div id="view-neumorph" class="view-container">
+        <div class="neumorph-controls">
+            <button class="theme-switch-btn" onclick="toggleGlobalTheme()">
+                <span id="theme-icon">☀️</span> <span id="theme-text">Modo Claro/Oscuro</span>
+            </button>
+        </div>
+        <h2 style="margin-bottom: 1.5rem; text-align: center; color: var(--primary);">Diseño Neumorfismo / Minimalista</h2>
+        <div class="neumorph-grid" id="neumorph-content"></div>
+    </div>
+
+    <!-- ================= VISTA 4: APP-LIKE ================= -->
+    <div id="view-app" class="view-container">
+        <h2 style="margin-bottom: 1.5rem; text-align: center; color: var(--primary);">Estilo "Calendario de Aplicación Móvil"</h2>
+        <div class="app-frame">
+            <div class="app-header">
+                <div class="app-date-indicator" id="app-current-date">Lunes, 12 de Octubre</div>
+                <h3 id="app-header-title">5C ADUANA - Horario</h3>
+                <div class="app-live-badge"><div class="pulse-dot"></div> Clase en curso</div>
+            </div>
+            <div class="app-content" id="app-day-content"></div>
+            <div class="app-tabs" id="app-tabs-container"></div>
+        </div>
+    </div>
+
+    <!-- ================= VISTA 5: INTERACTIVA HOVER/CLICK ================= -->
+    <div id="view-interactive" class="view-container">
+        <h2 style="margin-bottom: 1.5rem; text-align: center; color: var(--primary);">Vista Interactiva (Haz clic para detalles)</h2>
+        <div class="interactive-grid" id="interactive-content"></div>
+    </div>
+
+    <!-- ================= VISTA 6: RETRO ARCADE ================= -->
+    <div id="view-arcade" class="view-container">
+        <div class="arcade-wrapper">
+            <div class="arcade-title">★ ESTILO RETRO ARCADE 8-BITS ★</div>
+            <div class="arcade-grid" id="arcade-content"></div>
+        </div>
+    </div>
+
+    <!-- Botón Flotante y Menú de Cambio de Vistas -->
+    <button class="floating-switcher" onclick="toggleSwitcherModal()" title="Cambiar Vista">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+    </button>
+
+    <div class="switcher-modal" id="switcherModal">
+        <h3>Selecciona una Vista:</h3>
+        <div class="switcher-options">
+            <button class="switcher-btn active" onclick="switchView('kanban', this)">1. Tablero Kanban Semanal</button>
+            <button class="switcher-btn" onclick="switchView('timeline', this)">2. Línea de Tiempo (Timeline)</button>
+            <button class="switcher-btn" onclick="switchView('neumorph', this)">3. Neumorfismo / Claro-Oscuro</button>
+            <button class="switcher-btn" onclick="switchView('app', this)">4. Aplicación Móvil (App-like)</button>
+            <button class="switcher-btn" onclick="switchView('interactive', this)">5. Vista Interactiva Hover/Click</button>
+            <button class="switcher-btn" onclick="switchView('arcade', this)">6. Retro Arcade 8-bits</button>
+        </div>
+    </div>
+
+    <script>
+        // Datos completos del horario escolar
+        const horarioData = {
+            "Lunes": [
+                { time: "7:00 - 8:25", subject: "MATEM.", prof: "Sin profesor", note: "Pendiente asignación de docente titular.", link: "#" },
+                { time: "8:25 - 9:50", subject: "LENG. Y LIT.", prof: "Mabiolis Rodríguez", note: "Traer lectura analítica recomendada.", link: "#" },
+                { time: "9:50 - 10:00", subject: "RECESO", prof: "-", note: "Descanso general", link: "#", isReceso: true },
+                { time: "10:00 - 12:45", subject: "FUND. TEC. ADU.", prof: "Jotene Garces", note: "Revisión de normativas aduaneras vigentes.", link: "#" },
+                { time: "12:45 - 1:00", subject: "RECESO", prof: "-", note: "Descanso de almuerzo", link: "#", isReceso: true },
+                { time: "1:00 - 2:25", subject: "BIO. AMB. Y TEC.", prof: "Lucia Blanco", note: "Informe de laboratorio pendiente.", link: "#" }
+            ],
+            "Martes": [
+                { time: "7:00 - 8:25", subject: "IDIOMAS", prof: "Xotchilmar Meneses", note: "Práctica oral y gramática avanzada.", link: "#" },
+                { time: "8:25 - 9:50", subject: "PROY. ECO. SOC. Y TECN.", prof: "Laurymar Bastardo", note: "Avance de objetivos socio-tecnológicos.", link: "#" },
+                { time: "9:50 - 10:00", subject: "RECESO", prof: "-", note: "Descanso general", link: "#", isReceso: true },
+                { time: "10:00 - 11:25", subject: "FUND. TEC. ADU.", prof: "Jotene Garces", note: "Estudio de casos prácticos.", link: "#" },
+                { time: "12:45 - 1:00", subject: "RECESO", prof: "-", note: "Descanso de almuerzo", link: "#", isReceso: true },
+                { time: "2:25 - 3:50", subject: "BIO. AMB. Y TEC.", prof: "Lucia Blanco", note: "Evaluación continua.", link: "#" }
+            ],
+            "Miércoles": [
+                { time: "7:00 - 9:50", subject: "PROY. ECO. SOC. Y TECN.", prof: "Laurymar Bastardo", note: "Taller práctico en aula.", link: "#" },
+                { time: "9:50 - 10:00", subject: "RECESO", prof: "-", note: "Descanso general", link: "#", isReceso: true },
+                { time: "11:25 - 12:45", subject: "BIO. AMB. Y TEC.", prof: "Lucia Blanco", note: "Discusión grupal.", link: "#" },
+                { time: "12:45 - 1:00", subject: "RECESO", prof: "-", note: "Descanso de almuerzo", link: "#", isReceso: true }
+            ],
+            "Jueves": [
+                { time: "7:00 - 8:25", subject: "GHC/SOB. NAC.", prof: "Laurymar Bastardo", note: "Análisis geopolítico actual.", link: "#" },
+                { time: "8:25 - 9:50", subject: "IDIOMAS", prof: "Xotchilmar Meneses", note: "Vocabulario técnico.", link: "#" },
+                { time: "9:50 - 10:00", subject: "RECESO", prof: "-", note: "Descanso general", link: "#", isReceso: true },
+                { time: "10:00 - 11:25", subject: "ORI. VIN. SOC. LB.", prof: "Xotchilmar Meneses", note: "Orientación y vínculos comunitarios.", link: "#" },
+                { time: "11:25 - 12:45", subject: "MATEM.", prof: "Sin profesor / Luis Aguilar", note: "Soporte temporal de cátedra.", link: "#" },
+                { time: "12:45 - 1:00", subject: "RECESO", prof: "-", note: "Descanso de almuerzo", link: "#", isReceso: true }
+            ],
+            "Viernes": [
+                { time: "7:00 - 8:25", subject: "PROY. ECO. SOC. Y TECN.", prof: "Laurymar Bastardo", note: "Cierre de proyectos semanales.", link: "#" },
+                { time: "8:25 - 9:50", subject: "FUND. TEC. ADU.", prof: "Jotene Garces", note: "Prueba corta formativa.", link: "#" },
+                { time: "9:50 - 10:00", subject: "RECESO", prof: "-", note: "Descanso general", link: "#", isReceso: true },
+                { time: "10:00 - 11:25", subject: "LENG. Y LIT.", prof: "Mabiolis Rodríguez", note: "Entrega de ensayos.", link: "#" },
+                { time: "12:45 - 1:00", subject: "RECESO", prof: "-", note: "Descanso de almuerzo", link: "#", isReceso: true }
+            ]
+        };
+
+        const diasSemana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
+
+        // Inicializar vistas
+        document.addEventListener("DOMContentLoaded", () => {
+            renderKanban();
+            renderTimeline();
+            renderNeumorph();
+            renderAppView('Lunes');
+            renderInteractive();
+            renderArcade();
+        });
+
+        // Control del menú flotante
+        function toggleSwitcherModal() {
+            const modal = document.getElementById("switcherModal");
+            modal.classList.toggle("open");
+        }
+
+        function switchView(viewName, btn) {
+            document.querySelectorAll(".view-container").forEach(el => el.classList.remove("active"));
+            document.getElementById(`view-${viewName}`).classList.add("active");
+
+            document.querySelectorAll(".switcher-btn").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+
+            document.getElementById("switcherModal").classList.remove("open");
+        }
+
+        // 1. Renderizar Kanban
+        function renderKanban() {
+            const container = document.getElementById("kanban-content");
+            let html = "";
+            diasSemana.forEach(dia => {
+                html += `<div class="kanban-column"><h3>${dia}</h3>`;
+                horarioData[dia].forEach(item => {
+                    if (item.isReceso) {
+                        html += `<div class="kanban-card receso"><span class="card-time">${item.time}</span><span class="card-title">${item.subject}</span></div>`;
+                    } else {
+                        html += `<div class="kanban-card">
+                            <span class="card-time">${item.time}</span>
+                            <span class="card-title">${item.subject}</span>
+                            <span class="card-prof">Prof. ${item.prof}</span>
+                        </div>`;
+                    }
+                });
+                html += `</div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        // 2. Renderizar Timeline
+        function renderTimeline() {
+            const container = document.getElementById("timeline-content");
+            let html = "";
+            diasSemana.forEach(dia => {
+                html += `<div class="timeline-day-section">
+                    <div class="timeline-day-title">${dia}</div>
+                    <div class="timeline">`;
+                horarioData[dia].forEach(item => {
+                    html += `<div class="timeline-item">
+                        <span class="card-time">${item.time}</span>
+                        <div class="card-title" style="margin-top: 0.2rem;">${item.subject}</div>
+                        <div class="card-prof">Docente: ${item.prof}</div>
+                    </div>`;
+                });
+                html += `</div></div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        // 3. Renderizar Neumorfismo
+        function renderNeumorph() {
+            const container = document.getElementById("neumorph-content");
+            let html = "";
+            diasSemana.forEach(dia => {
+                html += `<div class="neumorph-card">
+                    <div class="neumorph-day-title">${dia}</div>`;
+                horarioData[dia].forEach(item => {
+                    html += `<div class="neumorph-class-item">
+                        <strong>${item.time}</strong><br>
+                        ${item.subject} <span style="opacity:0.7; font-size:0.8rem;">(${item.prof})</span>
+                    </div>`;
+                });
+                html += `</div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function toggleGlobalTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute("data-theme");
+            if (currentTheme === "dark") {
+                body.setAttribute("data-theme", "light");
+                document.getElementById("theme-icon").textContent = "🌙";
+            } else {
+                body.setAttribute("data-theme", "dark");
+                document.getElementById("theme-icon").textContent = "☀️";
+            }
+        }
+
+        // 4. Renderizar App-Like
+        let currentAppDay = 'Lunes';
+        function renderAppView(dia) {
+            currentAppDay = dia;
+            document.getElementById("app-header-title").textContent = `5C ADUANA - ${dia}`;
+            
+            const contentContainer = document.getElementById("app-day-content");
+            let html = "";
+            horarioData[dia].forEach(item => {
+                html += `<div class="app-class-card">
+                    <div>
+                        <div class="card-time">${item.time}</div>
+                        <div class="card-title">${item.subject}</div>
+                        <div class="card-prof" style="font-size:0.75rem;">${item.prof}</div>
+                    </div>
+                </div>`;
+            });
+            contentContainer.innerHTML = html;
+
+            // Renderizar pestañas
+            const tabsContainer = document.getElementById("app-tabs-container");
+            let tabsHtml = "";
+            diasSemana.forEach(d => {
+                const activeClass = d === dia ? "active" : "";
+                tabsHtml += `<button class="app-tab-btn ${activeClass}" onclick="renderAppView('${d}')">${d.substring(0,3)}</button>`;
+            });
+            tabsContainer.innerHTML = tabsHtml;
+        }
+
+        // 5. Renderizar Interactiva (Hover / Click)
+        function renderInteractive() {
+            const container = document.getElementById("interactive-content");
+            let html = "";
+            diasSemana.forEach(dia => {
+                html += `<div style="display:flex; flex-direction:column; gap:1rem;">
+                    <h3 style="color:var(--primary);">${dia}</h3>`;
+                horarioData[dia].forEach(item => {
+                    html += `<div class="interactive-card" onclick="this.classList.toggle('expanded')">
+                        <span class="card-time">${item.time}</span>
+                        <div class="card-title">${item.subject}</div>
+                        <div class="card-prof">Prof. ${item.prof}</div>
+                        <span class="expand-hint">Haz clic para ver detalles ▾</span>
+                        <div class="extra-details">
+                            <strong>Nota / Observación:</strong> ${item.note}<br>
+                            <a href="${item.link}" onclick="event.stopPropagation()" style="color:var(--primary); font-size:0.8rem; margin-top:5px; display:inline-block;">Ver recursos de la clase →</a>
+                        </div>
+                    </div>`;
+                });
+                html += `</div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        // 6. Renderizar Arcade 8-bits
+        function renderArcade() {
+            const container = document.getElementById("arcade-content");
+            let html = "";
+            diasSemana.forEach(dia => {
+                html += `<div class="arcade-box">
+                    <h4>[ ${dia} ]</h4>`;
+                horarioData[dia].forEach(item => {
+                    html += `<div class="arcade-item">
+                        <span>> ${item.time}</span><br>
+                        ${item.subject}<br>
+                        <span style="color:#ff9900;">PR: ${item.prof}</span>
+                    </div>`;
+                });
+                html += `</div>`;
+            });
+            container.innerHTML = html;
+        }
+    </script>
+</body>
+</html>

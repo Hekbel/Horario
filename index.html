@@ -1,0 +1,1698 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horario Escolar - 5C Aduana | ETC. Felipe Guevara Rojas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #0b0c10;
+            --phone-bg: #12131c;
+            --phone-wallpaper: linear-gradient(rgba(10, 10, 20, 0.65), rgba(10, 10, 20, 0.85)), url('https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1000&auto=format&fit=crop');
+            --accent: #8b5cf6;
+            --accent-glow: rgba(139, 92, 246, 0.5);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --card-bg: rgba(22, 26, 46, 0.9);
+            --green: #10b981;
+            --red: #ef4444;
+            --orange: #f59e0b;
+        }
+
+        [data-theme="light"] {
+            --bg-main: #eef2f6;
+            --phone-bg: #ffffff;
+            --phone-wallpaper: linear-gradient(rgba(255, 255, 255, 0.75), rgba(240, 243, 248, 0.85)), url('https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1000&auto=format&fit=crop');
+            --accent: #6366f1;
+            --accent-glow: rgba(99, 102, 241, 0.35);
+            --text-main: #111827;
+            --text-muted: #4b5563;
+            --card-bg: rgba(255, 255, 255, 0.92);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            overflow-x: hidden;
+            transition: background 0.4s ease, color 0.4s ease;
+        }
+
+        .top-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 65px;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+        }
+
+        .menu-container {
+            position: relative;
+        }
+
+        .menu-btn {
+            background: rgba(139, 92, 246, 0.15);
+            border: 1px solid var(--accent);
+            color: var(--text-main);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 6px 14px;
+            border-radius: 10px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .menu-btn:hover {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 0 12px var(--accent-glow);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 55px;
+            left: 0;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 14px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            width: 300px;
+            display: none;
+            flex-direction: column;
+            z-index: 1100;
+            overflow: hidden;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dropdown-menu.active {
+            display: flex;
+        }
+
+        .dropdown-item {
+            padding: 14px 20px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            transition: background 0.2s;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dropdown-item:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        /* Información Institucional Superior */
+        .institution-header-info {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-align: right;
+            line-height: 1.35;
+            max-width: 65%;
+        }
+
+        .institution-header-info span {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .view-section {
+            display: none;
+            width: 100%;
+            min-height: calc(100vh - 120px);
+            margin-top: 65px;
+            padding: 20px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .view-section.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .phone-frame {
+            width: 375px;
+            height: 720px;
+            background: var(--phone-bg);
+            border-radius: 44px;
+            border: 12px solid #232736;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.7), 0 0 35px var(--accent-glow);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: background 0.4s ease;
+        }
+
+        .phone-wallpaper-bg {
+            position: absolute;
+            inset: 0;
+            background: var(--phone-wallpaper);
+            background-size: cover;
+            background-position: center;
+            z-index: 1;
+            transition: background 0.5s ease;
+        }
+
+        /* Phone Bootloader Screen */
+        .boot-screen {
+            position: absolute;
+            inset: 0;
+            background: #050508;
+            z-index: 300;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            color: #fff;
+            transition: opacity 0.6s ease, visibility 0.6s;
+        }
+
+        .boot-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .boot-logo {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 16px;
+            color: var(--accent);
+            text-align: center;
+            text-shadow: 0 0 15px var(--accent);
+            margin-bottom: 25px;
+            animation: pulseBoot 1.5s infinite alternate;
+        }
+
+        @keyframes pulseBoot {
+            0% { transform: scale(0.98); opacity: 0.8; }
+            100% { transform: scale(1.03); opacity: 1; filter: drop-shadow(0 0 8px #a78bfa); }
+        }
+
+        .boot-progress-container {
+            width: 80%;
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.2);
+            margin-bottom: 12px;
+        }
+
+        .boot-progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #8b5cf6, #ec4899);
+            border-radius: 10px;
+            transition: width 2.8s cubic-bezier(0.1, 0.8, 0.3, 1);
+        }
+
+        .boot-subtext {
+            font-size: 10px;
+            color: #9ca3af;
+            font-family: monospace;
+            letter-spacing: 1px;
+        }
+
+        .notification-bar {
+            position: absolute;
+            top: -100px;
+            left: 12px;
+            right: 12px;
+            background: rgba(18, 20, 32, 0.95);
+            border: 1px solid var(--accent);
+            padding: 12px 14px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+            color: #fff;
+            font-size: 11px;
+            z-index: 250;
+            transition: top 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(10px);
+        }
+
+        .notification-bar.show {
+            top: 25px;
+        }
+
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .notification-title {
+            font-weight: 700;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .notif-close-btn {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #fff;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            transition: background 0.2s;
+        }
+
+        .notif-close-btn:hover {
+            background: var(--red);
+        }
+
+        .phone-screen {
+            position: relative;
+            z-index: 2;
+            height: 100%;
+            padding: 35px 18px 20px 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .status-header {
+            background: rgba(15, 23, 42, 0.75);
+            padding: 12px 16px;
+            border-radius: 18px;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        [data-theme="light"] .status-header {
+            background: rgba(255, 255, 255, 0.8);
+            border-color: rgba(0, 0, 0, 0.08);
+        }
+
+        .time-date-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .class-status-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--red);
+            box-shadow: 0 0 10px currentColor;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .app-icon {
+            background: rgba(26, 32, 53, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 22px;
+            padding: 16px 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            color: #fff;
+            text-align: center;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+        }
+
+        [data-theme="light"] .app-icon {
+            background: rgba(255, 255, 255, 0.85);
+            color: #1f2937;
+            border-color: rgba(0,0,0,0.1);
+        }
+
+        .app-icon:hover {
+            transform: translateY(-5px) scale(1.05);
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 10px 25px var(--accent-glow);
+        }
+
+        .app-icon span {
+            font-size: 28px;
+            margin-bottom: 6px;
+        }
+
+        .app-icon p {
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .phone-modal {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(13, 16, 28, 0.98);
+            backdrop-filter: blur(20px);
+            padding: 25px 18px;
+            transform: translateY(100%);
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            z-index: 200;
+            border-radius: 32px;
+        }
+
+        [data-theme="light"] .phone-modal {
+            background: rgba(255, 255, 255, 0.98);
+            color: #1f2937;
+        }
+
+        .phone-modal.open {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 12px;
+        }
+
+        .modal-close {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid var(--red);
+            color: var(--red);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: var(--red);
+            color: #fff;
+        }
+
+        .modal-body {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding-right: 4px;
+        }
+
+        .class-card-mini {
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 4px solid var(--accent);
+            padding: 12px 14px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        [data-theme="light"] .class-card-mini {
+            background: rgba(0, 0, 0, 0.04);
+        }
+
+        .class-time {
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 11px;
+        }
+
+        .class-name {
+            font-weight: 600;
+            margin: 3px 0;
+        }
+
+        .class-prof {
+            color: var(--text-muted);
+            font-size: 11px;
+        }
+
+        .game-overlay {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            background: #090a10;
+            display: none;
+            flex-direction: column;
+            z-index: 220;
+            overflow: hidden;
+            border-radius: 32px;
+        }
+
+        .game-header {
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 10, 18, 0.95);
+            border-bottom: 1px solid #2d204d;
+            margin-top: 15px;
+        }
+
+        .game-tabs {
+            display: flex;
+            gap: 6px;
+        }
+
+        .game-tab-btn {
+            background: rgba(139, 92, 246, 0.2);
+            border: 1px solid var(--accent);
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            cursor: pointer;
+        }
+
+        .game-tab-btn.active {
+            background: var(--accent);
+            font-weight: bold;
+        }
+
+        .game-canvas-container {
+            flex: 1;
+            position: relative;
+            background: #0b0914;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #gameCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            background: #0e0919;
+        }
+
+        .game-controls {
+            position: absolute;
+            bottom: 12px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-around;
+            padding: 0 10px;
+            z-index: 230;
+        }
+
+        .ctrl-btn {
+            background: rgba(139, 92, 246, 0.85);
+            border: 2px solid #a78bfa;
+            color: #fff;
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            touch-action: manipulation;
+        }
+
+        .ctrl-btn:active {
+            transform: scale(0.92);
+            background: var(--accent);
+        }
+
+        .ctrl-btn.fire {
+            background: rgba(239, 68, 68, 0.85);
+            border-color: #f87171;
+        }
+
+        .ctrl-btn.jump {
+            background: rgba(16, 185, 129, 0.85);
+            border-color: #34d399;
+        }
+
+        /* Gallery Overlay Inside Game */
+        .gallery-pane {
+            position: absolute;
+            inset: 0;
+            background: #0d0c1b;
+            z-index: 240;
+            display: none;
+            flex-direction: column;
+            padding: 45px 15px 15px 15px;
+            overflow-y: auto;
+            color: #fff;
+        }
+
+        .gallery-pane.active {
+            display: flex;
+        }
+
+        .gallery-title {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 11px;
+            color: #d8b4fe;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .art-card {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid #4c1d95;
+            border-radius: 14px;
+            padding: 12px;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .art-card.locked {
+            filter: grayscale(1);
+            opacity: 0.5;
+        }
+
+        .art-canvas {
+            border: 2px solid #a78bfa;
+            border-radius: 8px;
+            background: #000;
+        }
+
+        .art-status {
+            font-size: 11px;
+            font-weight: 600;
+            color: #a78bfa;
+        }
+
+        .dashboard-container {
+            width: 100%;
+            max-width: 1100px;
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .style-selector {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .style-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.12);
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .style-btn.active, .style-btn:hover {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+            box-shadow: 0 4px 12px var(--accent-glow);
+        }
+
+        .schedule-view-pane {
+            display: none;
+        }
+
+        .schedule-view-pane.active {
+            display: block;
+        }
+
+        /* 1. Kanban */
+        .kanban-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 15px;
+        }
+
+        .kanban-column {
+            background: rgba(0,0,0,0.25);
+            border-radius: 14px;
+            padding: 12px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .kanban-column h3 {
+            font-size: 14px;
+            color: var(--accent);
+            margin-bottom: 12px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 8px;
+        }
+
+        .kanban-card {
+            background: rgba(139, 92, 246, 0.12);
+            border-left: 4px solid var(--accent);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+
+        /* 2. Timeline */
+        .timeline-container {
+            position: relative;
+            padding-left: 20px;
+            border-left: 2px solid var(--accent);
+            margin: 10px 0;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 16px;
+            background: rgba(255,255,255,0.03);
+            padding: 12px 16px;
+            border-radius: 10px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -27px;
+            top: 14px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: 2px solid var(--bg-main);
+        }
+
+        /* 3. Sheet Table */
+        .sheet-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .sheet-table th, .sheet-table td {
+            border: 1px solid rgba(255,255,255,0.12);
+            padding: 10px;
+            transition: background 0.2s;
+        }
+
+        .sheet-table th {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .sheet-table tr:hover td {
+            background: rgba(139, 92, 246, 0.18);
+        }
+
+        .highlight-row {
+            background: rgba(245, 158, 11, 0.25) !important;
+        }
+
+        /* 4. Retro 8-Bits */
+        .retro-container {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 9px;
+            line-height: 1.8;
+            background: #050508;
+            color: #00ffcc;
+            padding: 20px;
+            border: 4px solid #c084fc;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(192, 132, 252, 0.3);
+        }
+
+        .retro-container h2 {
+            color: #ffff00;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-muted);
+            padding: 15px;
+            width: 100%;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            background: rgba(0,0,0,0.15);
+        }
+
+        footer span {
+            color: var(--accent);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="top-navbar">
+        <div class="menu-container">
+            <button class="menu-btn" onclick="toggleMenu()">☰ Menú</button>
+            <div class="dropdown-menu" id="mainDropdown">
+                <div class="dropdown-item" onclick="switchView('phone')">📱 Vista Teléfono Móvil</div>
+                <div class="dropdown-item" onclick="switchView('dashboard')">📊 Panel de Horarios (Múltiples Estilos)</div>
+                <div class="dropdown-item" onclick="toggleTheme()">🌓 Alternar Modo Claro / Oscuro</div>
+                <div class="dropdown-item" onclick="rebootPhone()">🔄 Reiniciar Teléfono (Bootloader)</div>
+            </div>
+        </div>
+        <div class="institution-header-info">
+            <b>ETC. Felipe Guevara Rojas</b> | Año Escolar 2026-2027<br>
+            Prof. Guía: <span>Xotchilmar Meneses</span> | Coord: <span>Carmen Gómez</span>
+        </div>
+    </header>
+
+    <section id="phoneView" class="view-section active">
+        <div class="phone-frame">
+            <div class="phone-wallpaper-bg"></div>
+
+            <!-- Bootloader Screen Animation -->
+            <div class="boot-screen" id="bootScreen">
+                <div class="boot-logo">NEXUZ OS<br><small style="font-size:9px; color:#a78bfa;">v2.6 BOOTLOADER</small></div>
+                <div class="boot-progress-container">
+                    <div class="boot-progress-bar" id="bootProgressBar"></div>
+                </div>
+                <div class="boot-subtext" id="bootSubtext">INICIALIZANDO SISTEMA...</div>
+            </div>
+
+            <!-- Notification Bar (Hidden by default, shown after 5s) -->
+            <div class="notification-bar" id="schoolNotification">
+                <div class="notification-header">
+                    <div class="notification-title">🎒 Recordatorio Escolar</div>
+                    <button class="notif-close-btn" onclick="dismissNotification()" title="Cerrar notificación">✕</button>
+                </div>
+                <div style="color:#d1d5db; line-height: 1.3;">
+                    Recuerda llevar tu agua, lápiz, borra, cuadernos y mantén precaución al cruzar la calle.
+                </div>
+            </div>
+
+            <!-- Main Phone Home Screen -->
+            <div class="phone-screen">
+                <div class="status-header">
+                    <div class="time-date-row">
+                        <span id="phoneTime">00:00:00</span>
+                        <span id="phoneDate">Cargando...</span>
+                    </div>
+                    <div class="class-status-badge">
+                        <div class="status-dot" id="statusDot"></div>
+                        <span id="statusText">Verificando estado...</span>
+                    </div>
+                </div>
+
+                <!-- App Icons Grid -->
+                <div class="apps-grid">
+                    <div class="app-icon" onclick="openDayModal('Lunes')">
+                        <span>📂</span>
+                        <p>Lunes</p>
+                    </div>
+                    <div class="app-icon" onclick="openDayModal('Martes')">
+                        <span>📁</span>
+                        <p>Martes</p>
+                    </div>
+                    <div class="app-icon" onclick="openDayModal('Miercoles')">
+                        <span>📂</span>
+                        <p>Miércoles</p>
+                    </div>
+                    <div class="app-icon" onclick="openDayModal('Jueves')">
+                        <span>📁</span>
+                        <p>Jueves</p>
+                    </div>
+                    <div class="app-icon" onclick="openDayModal('Viernes')">
+                        <span>📂</span>
+                        <p>Viernes</p>
+                    </div>
+                    <div class="app-icon" onclick="launchGame()" style="background: linear-gradient(135deg, #7c3aed, #db2777);">
+                        <span>🧛‍♀️</span>
+                        <p>Gótica App</p>
+                    </div>
+                </div>
+
+                <!-- Fullscreen Day Modal inside Phone Frame -->
+                <div class="phone-modal" id="phoneModal">
+                    <div class="modal-header">
+                        <h3 id="modalDayTitle" style="color:var(--accent); font-size:15px;">Detalle del Día</h3>
+                        <button class="modal-close" onclick="closeDayModal()">✕</button>
+                    </div>
+                    <div class="modal-body" id="modalDayContent">
+                        <!-- Dynamic schedule content -->
+                    </div>
+                </div>
+
+                <!-- Fullscreen Minigame Overlay inside Phone Frame -->
+                <div class="game-overlay" id="gameOverlay">
+                    <div class="game-header">
+                        <span style="color:#c084fc; font-weight:bold; font-size:12px; font-family:'Press Start 2P';">GÓTICA RUN</span>
+                        <div class="game-tabs">
+                            <button class="game-tab-btn active" id="btnGameTab" onclick="switchGameTab('game')">Juego</button>
+                            <button class="game-tab-btn" id="btnGalleryTab" onclick="switchGameTab('gallery')">Galería Pixel Art</button>
+                            <button onclick="closeGame()" style="background:#ef4444; border:none; color:#fff; padding:3px 8px; border-radius:6px; cursor:pointer; font-size:11px;">Salir</button>
+                        </div>
+                    </div>
+
+                    <div class="game-canvas-container" id="gameCanvasContainer">
+                        <canvas id="gameCanvas" width="350" height="580"></canvas>
+                        
+                        <!-- Onscreen Touch Controls -->
+                        <div class="game-controls">
+                            <button class="ctrl-btn" onclick="movePlayer(-1)">⬅️ Izq</button>
+                            <button class="ctrl-btn fire" onclick="shootSkull()">💀 Disparar</button>
+                            <button class="ctrl-btn jump" onclick="playerJump()">⬆️ Saltar</button>
+                            <button class="ctrl-btn" onclick="movePlayer(1)">Der ➡️</button>
+                        </div>
+
+                        <!-- Gallery Pane -->
+                        <div class="gallery-pane" id="galleryPane">
+                            <div class="gallery-title">GALERÍA PIXEL ART</div>
+                            
+                            <!-- Art Card 1 (500 pts) -->
+                            <div class="art-card locked" id="artCard1">
+                                <canvas class="art-canvas" id="canvasArt1" width="160" height="160"></canvas>
+                                <div class="art-status" id="artStatus1">🔒 Desbloquear a los 500m</div>
+                            </div>
+
+                            <!-- Art Card 2 (1000 pts) -->
+                            <div class="art-card locked" id="artCard2">
+                                <canvas class="art-canvas" id="canvasArt2" width="160" height="160"></canvas>
+                                <div class="art-status" id="artStatus2">🔒 Desbloquear a los 1000m</div>
+                            </div>
+
+                            <!-- Art Card 3 (2000 pts) -->
+                            <div class="art-card locked" id="artCard3">
+                                <canvas class="art-canvas" id="canvasArt3" width="160" height="160"></canvas>
+                                <div class="art-status" id="artStatus3">🔒 Desbloquear a los 2000m</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="dashboardView" class="view-section">
+        <div class="dashboard-container">
+            <h2 style="margin-bottom: 15px; font-size: 18px; color: var(--accent);">HORARIO GENERAL - 5C ADUANA</h2>
+            
+            <div class="style-selector">
+                <button class="style-btn active" onclick="switchDashboardStyle('kanban', this)">Kanban Semanal</button>
+                <button class="style-btn" onclick="switchDashboardStyle('timeline', this)">Línea de Tiempo</button>
+                <button class="style-btn" onclick="switchDashboardStyle('sheet', this)">Cuadrícula Interactiva</button>
+                <button class="style-btn" onclick="switchDashboardStyle('retro', this)">Retro 8-Bits</button>
+            </div>
+
+            <!-- 1. Kanban -->
+            <div id="style-kanban" class="schedule-view-pane active">
+                <div class="kanban-grid" id="kanbanGridContainer"></div>
+            </div>
+
+            <!-- 2. Timeline -->
+            <div id="style-timeline" class="schedule-view-pane">
+                <div class="timeline-container" id="timelineContainer"></div>
+            </div>
+
+            <!-- 3. Sheet Table -->
+            <div id="style-sheet" class="schedule-view-pane" style="overflow-x: auto;">
+                <table class="sheet-table">
+                    <thead>
+                        <tr>
+                            <th>Hora</th>
+                            <th>Lunes</th>
+                            <th>Martes</th>
+                            <th>Miércoles</th>
+                            <th>Jueves</th>
+                            <th>Viernes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sheetTableBody"></tbody>
+                </table>
+            </div>
+
+            <!-- 4. Retro 8-Bits -->
+            <div id="style-retro" class="schedule-view-pane">
+                <div class="retro-container" id="retroContainer"></div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        Patrocinado por <span>QuetzalNexuz</span> | Firma: <span>Hekbels</span>
+    </footer>
+
+    <script>
+        // Schedule Database (5C Aduana)
+        const scheduleData = {
+            "Lunes": [
+                { time: "7:00 - 8:25", subject: "MATEMÁTICAS", prof: "Sin profesor" },
+                { time: "8:25 - 9:50", subject: "LENGUA Y LITERATURA", prof: "Prof. Mabiolis Rodríguez" },
+                { time: "9:50 - 10:00", subject: "RECESO", prof: "Receso Escolar", recess: true },
+                { time: "10:00 - 12:45", subject: "FUND. TEC. ADUANERA", prof: "Prof. Jotene Garces" },
+                { time: "12:45 - 1:00", subject: "RECESO", prof: "Receso Escolar", recess: true },
+                { time: "1:00 - 2:25", subject: "BIO. AMB. Y TECNOLOGÍA", prof: "Prof. Lucia Blanco" }
+            ],
+            "Martes": [
+                { time: "7:00 - 8:25", subject: "IDIOMAS", prof: "Prof. Xotchilmar Meneses" },
+                { time: "8:25 - 9:50", subject: "PROY. ECO. SOC. Y TECN.", prof: "Prof. Laurymar Bastardo" },
+                { time: "9:50 - 10:00", subject: "RECESO", prof: "Receso Escolar", recess: true },
+                { time: "10:00 - 11:25", subject: "FUND. TEC. ADUANERA", prof: "Prof. Jotene Garces" },
+                { time: "12:45 - 1:00", subject: "RECESO", prof: "Receso Escolar", recess: true },
+                { time: "2:25 - 3:50", subject: "BIO. AMB. Y TECNOLOGÍA", prof: "Prof. Lucia Blanco" }
+            ],
+            "Miercoles": [
+                { time: "7:00 - 9:50", subject: "PROY. ECO. SOC. Y TECN.", prof: "Prof. Laurymar Bastardo" },
+                { time: "9:50 - 10:00", subject: "RECESO", prof: "Receso Escolar", recess: true },
+                { time: "11:25 - 12:45", subject: "BIO. AMB. Y TECNOLOGÍA", prof: "Prof. Lucia Blanco" },
+                { time: "12:45 - 1:00", subject: "RECESO", prof: "Receso Escolar", recess: true }
+            ],
+            "Jueves": [
+                { time: "7:00 - 8:25", subject: "GHC / SOB. NACIONAL", prof: "Prof. Laurymar Bastardo" },
+                { time: "8:25 - 9:50", subject: "IDIOMAS", prof: "Prof. Xotchilmar Meneses" },
+                { time: "9:50 - 10:00", subject: "RECESO", prof: "Receso Escolar", recess: true },
+                { time: "10:00 - 11:25", subject: "ORI. VIN. SOC. LB.", prof: "Prof. Xotchilmar Meneses" },
+                { time: "11:25 - 12:45", subject: "MATEMÁTICAS", prof: "Sin profesor / Luis Aguilar" },
+                { time: "12:45 - 1:00", subject: "RECESO", prof: "Receso Escolar", recess: true }
+            ],
+            "Viernes": [
+                { time: "7:00 - 8:25", subject: "PROY. ECO. SOC. Y TECN.", prof: "Prof. Laurymar Bastardo" },
+                { time: "8:25 - 9:50", subject: "FUND. TEC. ADUANERA", prof: "Prof. Jotene Garces" },
+                { time: "9:50 - 10:00", subject: "RECESO", prof: "Receso Escolar", recess: true },
+                { time: "10:00 - 11:25", subject: "LENGUA Y LITERATURA", prof: "Prof. Mabiolis Rodríguez" },
+                { time: "12:45 - 1:00", subject: "RECESO", prof: "Receso Escolar", recess: true }
+            ]
+        };
+
+        // Navigation Menu
+        function toggleMenu() {
+            document.getElementById('mainDropdown').classList.toggle('active');
+        }
+
+        function switchView(viewName) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            if(viewName === 'phone') {
+                document.getElementById('phoneView').classList.add('active');
+            } else if(viewName === 'dashboard') {
+                document.getElementById('dashboardView').classList.add('active');
+                renderDashboardStyles();
+            }
+            document.getElementById('mainDropdown').classList.remove('active');
+        }
+
+        function toggleTheme() {
+            if(document.body.getAttribute('data-theme') === 'light') {
+                document.body.removeAttribute('data-theme');
+            } else {
+                document.body.setAttribute('data-theme', 'light');
+            }
+            document.getElementById('mainDropdown').classList.remove('active');
+        }
+
+        // Phone Bootloader Animation
+        let notifTimeout = null;
+        function runBootloader() {
+            const bootScreen = document.getElementById('bootScreen');
+            const progressBar = document.getElementById('bootProgressBar');
+            const bootText = document.getElementById('bootSubtext');
+            
+            bootScreen.classList.remove('hidden');
+            progressBar.style.width = '0%';
+            bootText.innerText = 'INICIALIZANDO SISTEMA...';
+
+            setTimeout(() => { progressBar.style.width = '40%'; }, 200);
+            setTimeout(() => { 
+                progressBar.style.width = '80%'; 
+                bootText.innerText = 'CARGANDO MÓDULOS DE AULA...';
+            }, 1200);
+            setTimeout(() => { 
+                progressBar.style.width = '100%'; 
+                bootText.innerText = 'SISTEMA LISTO.';
+            }, 2300);
+
+            setTimeout(() => {
+                bootScreen.classList.add('hidden');
+                // Notification triggers 5 seconds AFTER boot is complete
+                clearTimeout(notifTimeout);
+                notifTimeout = setTimeout(() => {
+                    document.getElementById('schoolNotification').classList.add('show');
+                }, 5000);
+            }, 2800);
+        }
+
+        function rebootPhone() {
+            document.getElementById('schoolNotification').classList.remove('show');
+            runBootloader();
+            document.getElementById('mainDropdown').classList.remove('active');
+        }
+
+        function dismissNotification() {
+            document.getElementById('schoolNotification').classList.remove('show');
+        }
+
+        // Clock & Status Updates
+        function updateClockAndStatus() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+            const timeStr = `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+            
+            const options = { weekday: 'short', month: 'short', day: 'numeric' };
+            document.getElementById('phoneTime').innerText = timeStr;
+            document.getElementById('phoneDate').innerText = now.toLocaleDateString('es-ES', options);
+
+            const totalMinutes = hours * 60 + minutes;
+            const dot = document.getElementById('statusDot');
+            const statusText = document.getElementById('statusText');
+
+            if((totalMinutes >= 590 && totalMinutes <= 600) || (totalMinutes >= 765 && totalMinutes <= 780)) {
+                dot.style.background = 'var(--orange)';
+                statusText.innerText = 'En Receso Escolar';
+            } else if(totalMinutes >= 420 && totalMinutes <= 900) {
+                dot.style.background = 'var(--green)';
+                statusText.innerText = 'Horario de Clases';
+            } else {
+                dot.style.background = 'var(--red)';
+                statusText.innerText = 'Fuera de Clases';
+            }
+        }
+        setInterval(updateClockAndStatus, 1000);
+        updateClockAndStatus();
+
+        // Modal for Daily Classes inside Phone
+        function openDayModal(day) {
+            document.getElementById('modalDayTitle').innerText = `Horario: ${day}`;
+            const container = document.getElementById('modalDayContent');
+            container.innerHTML = '';
+            
+            const classes = scheduleData[day] || [];
+            if(classes.length === 0) {
+                container.innerHTML = '<p style="color:#aaa; text-align:center;">No hay clases programadas.</p>';
+            } else {
+                classes.forEach(item => {
+                    container.innerHTML += `
+                        <div class="class-card-mini" style="${item.recess ? 'border-left-color:var(--orange);' : ''}">
+                            <div class="class-time">${item.time}</div>
+                            <div class="class-name">${item.subject}</div>
+                            <div class="class-prof">${item.prof}</div>
+                        </div>
+                    `;
+                });
+            }
+            document.getElementById('phoneModal').classList.add('open');
+        }
+
+        function closeDayModal() {
+            document.getElementById('phoneModal').classList.remove('open');
+        }
+
+        let gameLoopId = null;
+        let gameState = {
+            lane: 1, // 0, 1, 2
+            yPos: 0, // for jump height
+            isJumping: false,
+            jumpVel: 0,
+            skullsInventory: 3,
+            walkDistance: 0, // meters
+            gameOver: false,
+            obstacles: [], // { lane, y, type: 'tomb'|'bat' }
+            skullsOnGround: [], // { lane, y }
+            projectiles: [], // { lane, y }
+            unlockedArts: [false, false, false]
+        };
+
+        function launchGame() {
+            document.getElementById('gameOverlay').style.display = 'flex';
+            switchGameTab('game');
+            initGameEngine();
+        }
+
+        function closeGame() {
+            document.getElementById('gameOverlay').style.display = 'none';
+            if(gameLoopId) cancelAnimationFrame(gameLoopId);
+        }
+
+        function switchGameTab(tab) {
+            document.getElementById('btnGameTab').classList.toggle('active', tab === 'game');
+            document.getElementById('btnGalleryTab').classList.toggle('active', tab === 'gallery');
+            document.getElementById('galleryPane').classList.toggle('active', tab === 'gallery');
+            if(tab === 'gallery') {
+                renderUnlockableArtCanvases();
+            }
+        }
+
+        function initGameEngine() {
+            gameState = {
+                lane: 1,
+                yPos: 0,
+                isJumping: false,
+                jumpVel: 0,
+                skullsInventory: 3,
+                walkDistance: 0,
+                gameOver: false,
+                obstacles: [],
+                skullsOnGround: [],
+                projectiles: [],
+                unlockedArts: gameState.unlockedArts || [false, false, false]
+            };
+
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+            let lastTime = performance.now();
+
+            function loop(now) {
+                const dt = (now - lastTime) / 1000;
+                lastTime = now;
+
+                if(!gameState.gameOver) {
+                    updateGameLogic(dt);
+                }
+
+                renderGameScene(ctx);
+                gameLoopId = requestAnimationFrame(loop);
+            }
+
+            if(gameLoopId) cancelAnimationFrame(gameLoopId);
+            gameLoopId = requestAnimationFrame(loop);
+        }
+
+        function movePlayer(dir) {
+            if(gameState.gameOver) return;
+            gameState.lane = Math.max(0, Math.min(2, gameState.lane + dir));
+        }
+
+        function playerJump() {
+            if(gameState.gameOver) return;
+            if(!gameState.isJumping) {
+                gameState.isJumping = true;
+                gameState.jumpVel = 14;
+            }
+        }
+
+        function shootSkull() {
+            if(gameState.gameOver) return;
+            if(gameState.skullsInventory > 0) {
+                gameState.skullsInventory--;
+                gameState.projectiles.push({
+                    lane: gameState.lane,
+                    y: 440 - gameState.yPos
+                });
+            }
+        }
+
+        function updateGameLogic(dt) {
+            // Distance progression
+            gameState.walkDistance += 12 * dt * 5; // 1m per step speed
+
+            // Unlocks check
+            if(gameState.walkDistance >= 500) gameState.unlockedArts[0] = true;
+            if(gameState.walkDistance >= 1000) gameState.unlockedArts[1] = true;
+            if(gameState.walkDistance >= 2000) gameState.unlockedArts[2] = true;
+
+            // Physics Jump
+            if(gameState.isJumping) {
+                gameState.yPos += gameState.jumpVel;
+                gameState.jumpVel -= 0.8;
+                if(gameState.yPos <= 0) {
+                    gameState.yPos = 0;
+                    gameState.isJumping = false;
+                }
+            }
+
+            // Spawn Obstacles & Skulls
+            if(Math.random() < 0.025) {
+                const lane = Math.floor(Math.random() * 3);
+                const type = Math.random() > 0.4 ? 'bat' : 'tomb';
+                gameState.obstacles.push({ lane, y: -40, type });
+            }
+
+            if(Math.random() < 0.03) {
+                const lane = Math.floor(Math.random() * 3);
+                gameState.skullsOnGround.push({ lane, y: -40 });
+            }
+
+            // Move objects downward
+            const speed = 220 * dt;
+            gameState.obstacles.forEach(o => o.y += speed);
+            gameState.skullsOnGround.forEach(s => s.y += speed);
+
+            // Move projectiles upward
+            gameState.projectiles.forEach(p => p.y -= 400 * dt);
+
+            // Clean out of screen
+            gameState.obstacles = gameState.obstacles.filter(o => o.y < 600);
+            gameState.skullsOnGround = gameState.skullsOnGround.filter(s => s.y < 600);
+            gameState.projectiles = gameState.projectiles.filter(p => p.y > -50);
+
+            // Collisions: Projectile vs Bat
+            gameState.projectiles.forEach((p, pIdx) => {
+                gameState.obstacles.forEach((o, oIdx) => {
+                    if(p.lane === o.lane && o.type === 'bat' && Math.abs(p.y - o.y) < 35) {
+                        // Destroy both
+                        gameState.obstacles.splice(oIdx, 1);
+                        gameState.projectiles.splice(pIdx, 1);
+                    }
+                });
+            });
+
+            // Collisions: Player vs Skull Collectible
+            const laneX = [65, 175, 285];
+            gameState.skullsOnGround.forEach((s, sIdx) => {
+                if(s.lane === gameState.lane && s.y > 400 && s.y < 480 && gameState.yPos < 30) {
+                    gameState.skullsInventory++;
+                    gameState.skullsOnGround.splice(sIdx, 1);
+                }
+            });
+
+            // Collisions: Player vs Obstacle (DEADLY)
+            gameState.obstacles.forEach(o => {
+                if(o.lane === gameState.lane && o.y > 410 && o.y < 470) {
+                    // Jump avoids tombs, bats require jumping high or shooting
+                    if(o.type === 'tomb' && gameState.yPos > 25) {
+                        // Avoided by jump!
+                    } else {
+                        // GAME OVER
+                        gameState.gameOver = true;
+                    }
+                }
+            });
+        }
+
+        function renderGameScene(ctx) {
+            ctx.clearRect(0, 0, 350, 580);
+
+            // Track background & lanes
+            ctx.fillStyle = '#110c22';
+            ctx.fillRect(0, 0, 350, 580);
+
+            // Track lines
+            ctx.strokeStyle = '#3b2164';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(120, 0); ctx.lineTo(120, 580);
+            ctx.moveTo(230, 0); ctx.lineTo(230, 580);
+            ctx.stroke();
+
+            const laneX = [65, 175, 285];
+
+            // Render Skulls on ground
+            gameState.skullsOnGround.forEach(s => {
+                drawPixelSkull(ctx, laneX[s.lane], s.y, 1.8);
+            });
+
+            // Render Obstacles (Tombs & Bats)
+            gameState.obstacles.forEach(o => {
+                if(o.type === 'tomb') {
+                    drawPixelTomb(ctx, laneX[o.lane], o.y);
+                } else {
+                    drawPixelBat(ctx, laneX[o.lane], o.y);
+                }
+            });
+
+            // Render Projectiles
+            gameState.projectiles.forEach(p => {
+                drawPixelSkull(ctx, laneX[p.lane], p.y, 1.2, true);
+            });
+
+            // Render Player (Goth Girl Pixel Art)
+            const playerY = 440 - gameState.yPos;
+            drawGothGirlPixel(ctx, laneX[gameState.lane], playerY);
+
+            // HUD overlay
+            ctx.fillStyle = 'rgba(10, 10, 20, 0.85)';
+            ctx.fillRect(0, 0, 350, 45);
+            ctx.strokeStyle = '#6d28d9';
+            ctx.strokeRect(0, 0, 350, 45);
+
+            ctx.fillStyle = '#c084fc';
+            ctx.font = '10px "Press Start 2P"';
+            ctx.fillText(`Caminata: ${Math.floor(gameState.walkDistance)}m`, 12, 28);
+
+            ctx.fillStyle = '#f43f5e';
+            ctx.fillText(`💀 x${gameState.skullsInventory}`, 240, 28);
+
+            // Game Over Screen
+            if(gameState.gameOver) {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
+                ctx.fillRect(0, 0, 350, 580);
+
+                ctx.fillStyle = '#ef4444';
+                ctx.font = '16px "Press Start 2P"';
+                ctx.textAlign = 'center';
+                ctx.fillText('¡GAME OVER!', 175, 240);
+
+                ctx.fillStyle = '#fff';
+                ctx.font = '10px "Press Start 2P"';
+                ctx.fillText(`Recorriste: ${Math.floor(gameState.walkDistance)}m`, 175, 280);
+
+                ctx.fillStyle = '#a78bfa';
+                ctx.fillText('Toca o presiona Saltar', 175, 330);
+                ctx.fillText('para Reintentar', 175, 350);
+                ctx.textAlign = 'left';
+            }
+        }
+
+        // Pixel Art Drawing Helper Functions
+        function drawGothGirlPixel(ctx, x, y) {
+            ctx.save();
+            ctx.translate(x - 16, y - 24);
+            const scale = 2;
+
+            // Pixel grid representation for Goth Girl Character
+            const pixels = [
+                // Hair top / bow
+                [0,0,0,1,1,1,1,0,0,0],
+                [0,0,1,1,1,1,1,1,0,0],
+                [0,1,1,2,2,2,2,1,1,0], // 2 = pale face
+                [0,1,1,2,3,2,3,1,1,0], // 3 = gothic dark eyes
+                [0,1,1,2,2,4,2,1,1,0], // 4 = purple lipstick
+                [0,0,1,5,5,5,5,1,0,0], // 5 = black goth dress
+                [0,1,5,5,5,5,5,5,1,0],
+                [0,1,5,5,6,6,5,5,1,0], // 6 = purple accent ribbon
+                [0,0,5,5,5,5,5,5,0,0],
+                [0,0,1,1,0,0,1,1,0,0], // boots
+            ];
+
+            const colors = {
+                1: '#18181b', // Black Hair / Dress
+                2: '#f3e8ff', // Pale Goth Skin
+                3: '#7e22ce', // Purple Shadowed Eyes
+                4: '#a855f7', // Dark Lipstick
+                5: '#27272a', // Corset / Skirt
+                6: '#c084fc'  // Purple Trim
+            };
+
+            for(let r = 0; r < pixels.length; r++) {
+                for(let c = 0; c < pixels[r].length; c++) {
+                    const colorId = pixels[r][c];
+                    if(colorId > 0) {
+                        ctx.fillStyle = colors[colorId];
+                        ctx.fillRect(c * scale * 1.6, r * scale * 2, scale * 1.6, scale * 2);
+                    }
+                }
+            }
+            ctx.restore();
+        }
+
+        function drawPixelSkull(ctx, x, y, scale = 1.5, aura = false) {
+            ctx.save();
+            ctx.translate(x - 10, y - 10);
+            if(aura) {
+                ctx.shadowColor = '#ef4444';
+                ctx.shadowBlur = 10;
+            }
+            ctx.fillStyle = '#f3f4f6';
+            ctx.fillRect(3*scale, 0, 6*scale, 2*scale);
+            ctx.fillRect(1*scale, 2*scale, 10*scale, 6*scale);
+            // Eye sockets
+            ctx.fillStyle = '#111827';
+            ctx.fillRect(2*scale, 4*scale, 2*scale, 2*scale);
+            ctx.fillRect(8*scale, 4*scale, 2*scale, 2*scale);
+            // Teeth
+            ctx.fillStyle = '#f3f4f6';
+            ctx.fillRect(3*scale, 8*scale, 6*scale, 3*scale);
+            ctx.fillStyle = '#111827';
+            ctx.fillRect(4*scale, 9*scale, 1*scale, 2*scale);
+            ctx.fillRect(7*scale, 9*scale, 1*scale, 2*scale);
+            ctx.restore();
+        }
+
+        function drawPixelBat(ctx, x, y) {
+            ctx.save();
+            ctx.translate(x - 15, y - 10);
+            const s = 1.8;
+            ctx.fillStyle = '#a855f7';
+            // Wings
+            ctx.fillRect(0, 0, 4*s, 3*s);
+            ctx.fillRect(12*s, 0, 4*s, 3*s);
+            ctx.fillRect(2*s, 2*s, 12*s, 4*s);
+            // Body
+            ctx.fillStyle = '#3b0764';
+            ctx.fillRect(5*s, 1*s, 6*s, 6*s);
+            // Red eyes
+            ctx.fillStyle = '#ef4444';
+            ctx.fillRect(6*s, 2*s, 1*s, 1*s);
+            ctx.fillRect(9*s, 2*s, 1*s, 1*s);
+            ctx.restore();
+        }
+
+        function drawPixelTomb(ctx, x, y) {
+            ctx.save();
+            ctx.translate(x - 12, y - 15);
+            const s = 1.8;
+            ctx.fillStyle = '#64748b';
+            ctx.fillRect(2*s, 0, 8*s, 2*s);
+            ctx.fillRect(1*s, 2*s, 10*s, 10*s);
+            ctx.fillRect(0, 12*s, 12*s, 3*s);
+            // RIP Cross
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(5*s, 4*s, 2*s, 6*s);
+            ctx.fillRect(3*s, 5*s, 6*s, 2*s);
+            ctx.restore();
+        }
+
+        function renderUnlockableArtCanvases() {
+            // Art 1 (500m)
+            const c1 = document.getElementById('canvasArt1');
+            const st1 = document.getElementById('artStatus1');
+            const card1 = document.getElementById('artCard1');
+            if(gameState.unlockedArts[0]) {
+                card1.classList.remove('locked');
+                st1.innerText = '✨ ¡DESBLOQUEADO (500m)! - Gótica Model I';
+                st1.style.color = '#34d399';
+                drawSexyGothPixelArt(c1.getContext('2d'), 1);
+            }
+
+            // Art 2 (1000m)
+            const c2 = document.getElementById('canvasArt2');
+            const st2 = document.getElementById('artStatus2');
+            const card2 = document.getElementById('artCard2');
+            if(gameState.unlockedArts[1]) {
+                card2.classList.remove('locked');
+                st2.innerText = '✨ ¡DESBLOQUEADO (1000m)! - Gótica Model II';
+                st2.style.color = '#34d399';
+                drawSexyGothPixelArt(c2.getContext('2d'), 2);
+            }
+
+            // Art 3 (2000m)
+            const c3 = document.getElementById('canvasArt3');
+            const st3 = document.getElementById('artStatus3');
+            const card3 = document.getElementById('artCard3');
+            if(gameState.unlockedArts[2]) {
+                card3.classList.remove('locked');
+                st3.innerText = '✨ ¡DESBLOQUEADO (2000m)! - Gótica Queen III';
+                st3.style.color = '#34d399';
+                drawSexyGothPixelArt(c3.getContext('2d'), 3);
+            }
+        }
+
+        function drawSexyGothPixelArt(ctx, variant) {
+            ctx.clearRect(0, 0, 160, 160);
+            ctx.fillStyle = '#0f0a1c';
+            ctx.fillRect(0, 0, 160, 160);
+
+            // Detailed pixel art rendering of stylish Gothic Pin-up
+            const pixelScale = 8;
+            
+            // Stylized Gothic Pin-up Character Matrix
+            for(let y = 0; y < 20; y++) {
+                for(let x = 0; x < 20; x++) {
+                    let color = null;
+
+                    // Base silhouette shape & curves
+                    if(y >= 3 && y <= 6 && x >= 7 && x <= 12) color = '#f3e8ff'; // Face/Neck
+                    if(y >= 2 && y <= 8 && (x <= 6 || x >= 13)) color = '#18181b'; // Flowing Long Black Hair
+                    if(y >= 7 && y <= 10 && x >= 6 && x <= 13) color = '#27272a'; // Corset/Outfit
+                    if(y >= 11 && y <= 16 && x >= 5 && x <= 14) {
+                        color = variant === 1 ? '#a855f7' : (variant === 2 ? '#ec4899' : '#8b5cf6'); // Curve Skirt / Accent
+                    }
+                    if(y >= 17 && x >= 6 && x <= 13) color = '#09090b'; // High Boots
+
+                    // Detailed features
+                    if(y === 4 && (x === 8 || x === 11)) color = '#7e22ce'; // Gothic purple eyes
+                    if(y === 5 && (x === 9 || x === 10)) color = '#be185d'; // Lips
+                    if(y === 8 && (x === 8 || x === 11)) color = '#f3e8ff'; // Shoulders
+
+                    if(color) {
+                        ctx.fillStyle = color;
+                        ctx.fillRect(x * pixelScale, y * pixelScale, pixelScale, pixelScale);
+                    }
+                }
+            }
+
+            // Decorative Pixel Frame
+            ctx.strokeStyle = variant === 1 ? '#a855f7' : (variant === 2 ? '#ec4899' : '#e11d48');
+            ctx.lineWidth = 4;
+            ctx.strokeRect(2, 2, 156, 156);
+        }
+
+        // Key bindings for keyboard players
+        window.addEventListener('keydown', (e) => {
+            if(e.key === 'ArrowLeft' || e.key === 'a') movePlayer(-1);
+            if(e.key === 'ArrowRight' || e.key === 'd') movePlayer(1);
+            if(e.key === 'ArrowUp' || e.key === 'w' || e.key === ' ') {
+                if(gameState.gameOver) {
+                    initGameEngine();
+                } else {
+                    playerJump();
+                }
+            }
+            if(e.key === 'f' || e.key === 'e') shootSkull();
+        });
+
+        function switchDashboardStyle(styleName, btnEl) {
+            document.querySelectorAll('.style-btn').forEach(btn => btn.classList.remove('active'));
+            if(btnEl) btnEl.classList.add('active');
+
+            document.querySelectorAll('.schedule-view-pane').forEach(pane => pane.classList.remove('active'));
+            document.getElementById(`style-${styleName}`).classList.add('active');
+        }
+
+        function renderDashboardStyles() {
+            // 1. Kanban
+            const kanbanContainer = document.getElementById('kanbanGridContainer');
+            kanbanContainer.innerHTML = '';
+            for(let day in scheduleData) {
+                let colHtml = `<div class="kanban-column"><h3>${day}</h3>`;
+                scheduleData[day].forEach(cls => {
+                    colHtml += `
+                        <div class="kanban-card">
+                            <b style="color:var(--accent);">${cls.time}</b><br>
+                            <b>${cls.subject}</b><br>
+                            <span style="color:var(--text-muted); font-size:11px;">${cls.prof}</span>
+                        </div>`;
+                });
+                colHtml += `</div>`;
+                kanbanContainer.innerHTML += colHtml;
+            }
+
+            // 2. Timeline
+            const timelineContainer = document.getElementById('timelineContainer');
+            timelineContainer.innerHTML = '';
+            for(let day in scheduleData) {
+                timelineContainer.innerHTML += `<h4 style="color:var(--accent); margin: 15px 0 10px 0;">${day}</h4>`;
+                scheduleData[day].forEach(cls => {
+                    timelineContainer.innerHTML += `
+                        <div class="timeline-item">
+                            <span style="font-size:11px; color:var(--accent); font-weight:700;">${cls.time}</span>
+                            <div style="font-weight:600;">${cls.subject}</div>
+                            <div style="font-size:11px; color:var(--text-muted);">${cls.prof}</div>
+                        </div>
+                    `;
+                });
+            }
+
+            // 3. Sheet Table
+            const tbody = document.getElementById('sheetTableBody');
+            tbody.innerHTML = '';
+            const times = ["7:00 - 8:25", "8:25 - 9:50", "9:50 - 10:00", "10:00 - 11:25", "11:25 - 12:45", "12:45 - 1:00", "1:00 - 2:25"];
+            times.forEach(t => {
+                let row = `<tr><td><b>${t}</b></td>`;
+                ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes'].forEach(day => {
+                    const found = (scheduleData[day] || []).find(c => c.time.includes(t.split(' - ')[0]));
+                    row += `<td onclick="highlightCell(this)">${found ? found.subject + '<br><small style="color:var(--text-muted);">' + found.prof + '</small>' : '-'}</td>`;
+                });
+                row += `</tr>`;
+                tbody.innerHTML += row;
+            });
+
+            // 4. Retro 8-Bits
+            const retro = document.getElementById('retroContainer');
+            retro.innerHTML = `<h2>-- ETC. FELIPE GUEVARA ROJAS --</h2>`;
+            for(let day in scheduleData) {
+                retro.innerHTML += `<p style="color:#ffff00; margin-top:12px;">[ ${day.toUpperCase()} ]</p>`;
+                scheduleData[day].forEach(cls => {
+                    retro.innerHTML += `> ${cls.time} | ${cls.subject} (${cls.prof})<br>`;
+                });
+            }
+        }
+
+        function highlightCell(cell) {
+            document.querySelectorAll('.sheet-table td').forEach(td => td.classList.remove('highlight-row'));
+            cell.classList.add('highlight-row');
+        }
+
+        // Run phone boot animation on initial page load
+        window.onload = function() {
+            runBootloader();
+        };
+    </script>
+</body>
+</html>
